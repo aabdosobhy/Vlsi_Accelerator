@@ -5,7 +5,7 @@ use ieee.std_logic_unsigned.all;
 
 ENTITY Accelerator IS
 GENERIC ( n : integer := 8);
-PORT( Clk,Rst ,Start,Size,R_F_Ack, R_I_Ack,Write_ack,instr : in std_logic;
+PORT( Clk,Rst ,Start,Size,R_F_Ack, R_I_Ack_dma,Write_ack,instr : in std_logic;
 	 alu1,alu2,alu3,alu4,alu5,
 	alu6,alu7,alu8,alu9,alu10,
 	alu11,alu12,alu13,alu14,
@@ -74,7 +74,7 @@ GENERIC ( n : integer := 16);
 END component;
 
 
-signal en_S,en_P, R_F_ack_reg_out,R_F_Ack_buff,en_counter ,en_mux_in_count ,counter_eq_zero,counter_del_not_zero,R_I_Ack_buff , counter_eq_8 ,
+signal 	R_I_Ack,en_S,en_P, R_F_ack_reg_out,R_F_Ack_buff,en_counter ,en_mux_in_count ,counter_eq_zero,counter_del_not_zero,counter_del_eq_zero,R_I_Ack_buff , counter_eq_8 ,
 	write_ack_buff_in,write_ack_buff_out,en_W_cache_sig ,Write_acc_sig ,write_ack_buf: std_logic;
 signal counter_value,out_mux_in_counter ,counter_del_val,counter_dec,out_mux_ld_count_val: std_logic_vector(3 downto 0);
 signal 	result_alu_comp1,result_alu_comp2,result_alu_comp3,result_alu_comp4,result_alu_comp5,
@@ -90,10 +90,11 @@ signal  out_sum1,out_sum2,out_sum3,out_sum4,out_sum5,out_sum6,out_sum7,
 		out_sum8,out_sum9,out_sum10,out_sum11,out_sum12,out_sum13,out_sum14,out_sum15,
 		out_sum16,out_sum17,out_sum18,out_sum19,out_sum20,out_sum21,out_sum22,out_sum23,out_sum24 : std_logic_vector(7 downto 0 );
 signal out_sum24_shft3,out_sum24_shft5 : std_logic_vector (7 downto 0 );
-signal  sh1,sh2 : std_logic;
+signal  sh1,sh2 ,R_I_Ack_count_zero,R_I_Ack_special,save_R_I_Ack_bgd : std_logic;
 signal const_zero_value : std_logic_vector (7 downto 0 );
 
 BEGIN
+
 
 R_F_ack_reg : my_DFF  PORT map (Clk,Rst,'1', R_F_Ack, R_F_ack_reg_out);
 R_F_ack_buff_reg : my_DFF_rise  PORT map (Clk,Rst,'1', R_F_ack_reg_out, R_F_Ack_buff);
@@ -210,5 +211,16 @@ out_sum24_shft3 <= "000" & out_sum24 (7 downto 3);
 out_sum24_shft5<= "00000" & out_sum24 (7 downto 5);
 
 out_cache_value :  mux4	Generic map (m=>8) port map ( sh2,sh1,out_sum24,out_sum24_shft3,out_sum24_shft5,out_sum24,cache_w_in);
+
+
+
+counter_del_eq_zero<= not counter_del_not_zero ;
+save_R_I_Ack_bgd <= R_I_Ack_dma and en_P;
+
+R_I_Ack_spical_1 : my_DFF  PORT map (Clk,Rst,save_R_I_Ack_bgd, save_R_I_Ack_bgd, R_I_Ack_special);
+R_I_Ack_spical_2 : my_DFF_rise  PORT map (Clk,Rst,counter_del_eq_zero,R_I_Ack_special , R_I_Ack_count_zero);
+
+R_I_Ack  <= (R_I_Ack_dma and  not (en_P)) or (R_I_Ack_count_zero and not (en_P));
+
 
 end my_Accelerator;

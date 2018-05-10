@@ -11,8 +11,10 @@ BEGIN
 	BEGIN
 		IF(rst = '1') THEN
         		q <= '0';
-		ELSIF rising_edge(clk) and en='1' THEN     
+		ELSIF rising_edge(clk)  THEN   
+                       IF en='1'  THEN
  	    		q <= d;
+                        END IF;
 		END IF;
 	END PROCESS;
 END a_my_DFF_rise;

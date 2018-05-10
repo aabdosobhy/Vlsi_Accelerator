@@ -1,8 +1,7 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.all;
 
-ENTITY mux_2x1_1_bit IS 
-GENERIC ( n : integer := 16); 
+ENTITY mux_2x1_1_bit IS  
 		PORT (in1,in2 : IN std_logic;
                     s	:  IN std_logic;
   		   out1 : OUT std_logic);    

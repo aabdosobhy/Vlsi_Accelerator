@@ -14,8 +14,10 @@ PROCESS (Clk,Rst,enb)
 BEGIN
 IF Rst = '1' THEN
 		q <= (OTHERS=>'0');
-ELSIF falling_edge(Clk) and enb = '1' THEN
+ELSIF falling_edge(Clk) THEN
+                IF enb = '1' THEN
 		q <= d;
+		END IF;
 END IF;
 END PROCESS;
 END a_my_nDFF_fall;

@@ -1,0 +1,8 @@
+/home/ayman/Documents/vlsi_proj mux2_1 mux2_1_a
+/home/ayman/Documents/vlsi_proj my_DFF a_my_DFF
+/home/ayman/Documents/vlsi_proj my_nDFF a_my_nDFF
+/home/ayman/Documents/vlsi_proj my_nDFF_fall a_my_nDFF_fall
+/home/ayman/Documents/vlsi_proj for_write for_write_arch
+
+
+
